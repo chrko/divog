@@ -1,4 +1,5 @@
 %include "icecast_credentials.liq"
+%include "funcs.liq"
 
 set("log.file", true)
 set("log.stdout", true)
@@ -20,47 +21,12 @@ set("server.timeout", 120.)
 
 fallback_audio = blank()
 
-divog_a_input = mksafe(
-  id="divog_a_http_safe",
-  audio_to_stereo(
-    drop_midi(
-      drop_video(
-        input.http(
-          id="divog_a_http",
-          "http://localhost/input-a"
-        )
-      )
-    )
-  )
-)
+divog_a_input = in_http("divog_a", "http://localhost/input-a")
+divog_b_input = in_http("divog_b", "http://localhost/input-b")
+moderation_input = in_http("moderation", "http://localhost/mod")
 
-divog_b_input = mksafe(
-  id="divog_b_http_safe",
-  audio_to_stereo(
-    drop_midi(
-      drop_video(
-        input.http(
-          id="divog_b_http",
-          "http://localhost/input-b"
-        )
-      )
-    )
-  )
-)
-
-moderation_input = mksafe(
-  id="moderation_http_safe",
-  audio_to_stereo(
-    drop_midi(
-      drop_video(
-        input.http(
-          id="moderation_http",
-          "http://localhost/mod"
-        )
-      )
-    )
-  )
-)
+dump("divog_a_input", divog_a_input)
+dump("divog_b_input", divog_b_input)
 
 divog_a_blank = ref true
 divog_b_blank = ref true
@@ -100,7 +66,7 @@ divog_b = on_blank(
   divog_b_input
 )
 
-moderation_on_blank = on_blank(
+moderation = on_blank(
   id="moderation_blank_detection",
   max_blank=60.,
   min_noise=0.5,
@@ -129,7 +95,7 @@ switched = switch(
   [
     (
       {
-        (not !moderation_blank) and (source_name() == "mod"
+        (not !moderation_blank) and (source_name() == "mod")
       },
       moderation
     ),
@@ -165,7 +131,7 @@ divog_main = output.icecast(
 
   %mp3.cbr(
     internal_quality=6,
-    bitrate=128
+    bitrate=192
   ),
   switched
 )
