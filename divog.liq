@@ -14,65 +14,36 @@ moderation_input = in_http("moderation", "http://localhost/mod")
 dump("divog_a_input", divog_a_input)
 dump("divog_b_input", divog_b_input)
 
+def blank_detecter(name, blank_ref, source, ~max_blank=60., ~min_noise=0.5)
+  src = on_blank(
+    id=name ^ "_blank_detection",
+    max_blank=max_blank,
+    min_noise=min_noise,
+    start_blank=true,
+    track_sensitive=false,
+    on_noise = {
+      log(name ^ " noisy")
+      blank_ref := false;
+    },
+    {
+      log(name ^ " silent")
+      blank_ref := true;
+    },
+    source
+  )
+
+  # assure activation so blank detection works
+  output.dummy(src, id="blank_detection_dummy_" ^ name)
+  src
+end
+
 divog_a_blank = ref true
 divog_b_blank = ref true
 moderation_blank = ref true
 
-divog_a = on_blank(
-  id="divog_a_blank_detection",
-  max_blank=60.,
-  min_noise=0.5,
-  start_blank=true,
-  track_sensitive=false,
-  on_noise = {
-    log("a noisy")
-    divog_a_blank := false;
-  },
-  {
-    log("a silent")
-    divog_a_blank := true;
-  },
-  divog_a_input
-)
-
-divog_b = on_blank(
-  id="divog_b_blank_detection",
-  max_blank=60.,
-  min_noise=0.5,
-  start_blank=true,
-  track_sensitive=false,
-  on_noise = {
-    log("b noisy")
-    divog_b_blank := false;
-  },
-  {
-    log("b silent")
-    divog_b_blank := true;
-  },
-  divog_b_input
-)
-
-moderation = on_blank(
-  id="moderation_blank_detection",
-  max_blank=60.,
-  min_noise=0.5,
-  start_blank=true,
-  track_sensitive=false,
-  on_noise = {
-    log("moderation noisy")
-    moderation_blank := false;
-  },
-  {
-    log("moderation silent")
-    moderation_blank := true;
-  },
-  moderation_input
-)
-
-# activate blank detection
-divog_a_blank_dummy = output.dummy(divog_a)
-divog_b_blank_dummy = output.dummy(divog_b)
-moderation_blank_dummy = output.dummy(moderation)
+divog_a = blank_detecter("divog_a", divog_a_blank, divog_a_input)
+divog_b = blank_detecter("divog_b", divog_b_blank, divog_b_input)
+moderation = blank_detecter("moderation", moderation_blank, moderation_input)
 
 source_name = interactive.string("active_source", "a")
 
