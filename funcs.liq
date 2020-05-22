@@ -13,7 +13,7 @@ end
 
 def in_http(name, url)
   in = input.http(url, id=name ^ "_input_http")
-  audio_to_stereo(
+  clean = audio_to_stereo(
     id="z_audio_to_stereo_" ^ name,
     drop_video(
       id="z_drop_video_" ^ name,
@@ -25,6 +25,6 @@ def in_http(name, url)
   )
   mksafe(
     id=name ^ "_safe_input",
-    in
+    clean
   )
 end
