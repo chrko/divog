@@ -154,12 +154,15 @@ divog_main = output.icecast(
   id="divog_main",
   description="Digital Verteiltes Online Gulasch",
   genre="various",
-  host=main_ice_host,
-  port=main_ice_port,
-  password=main_ice_pass,
   url="https://entropia.de/GPN20",
   name="DiVOG",
+
+  host=main_ice_host,
+  port=main_ice_port,
+  user=main_ice_user,
+  password=main_ice_pass,
   mount=main_ice_mount,
+
   %mp3.cbr(
     internal_quality=6,
     bitrate=128
