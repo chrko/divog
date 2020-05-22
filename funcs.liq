@@ -1,5 +1,5 @@
 def dump(name_base, source)
-  file_name = "/home/divog/recordings/$(name_base)/%Y-%m-%d/%H-%M-%S.mp3"
+  file_name = "/home/divog/recordings/" ^ name_base ^ "/%Y-%m-%d/%H-%M-%S.mp3"
   output.file(
     id=name_base ^ "_dump",
     %mp3(
