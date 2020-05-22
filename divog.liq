@@ -111,16 +111,9 @@ divog_a = blank_detecter("divog_a", divog_a_blank, divog_a_input)
 divog_b = blank_detecter("divog_b", divog_b_blank, divog_b_input)
 moderation = blank_detecter("moderation", moderation_blank, moderation_input, max_blank=10.)
 
-def transition(a,b)
-  add(normalize=false,
-      [ fade.in(duration=3.,b),
-        fade.out(duration=3.,a) ])
-end
-
 # main switching function
 switched = switch(
   track_sensitive=false,
-  transitions=[transition],
   [
     (
       {
