@@ -1,6 +1,6 @@
 set("log.file", true)
 set("log.stdout", true)
-set("log.unix_timestamp", true)
+set("log.unix_timestamps", false)
 
 set("frame.audio.samplerate", 44100)
 
