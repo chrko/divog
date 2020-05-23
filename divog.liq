@@ -62,7 +62,7 @@ watcher = file.watch(
 
 # fallback source
 # TODO: Currently only silence, some other audio available?
-fallback_audio = blank(id="fallback_source")
+fallback_audio = in_http("fallback", "http://localhost/fallback")
 
 # create safe and stereo audio only inputs
 divog_a_input = in_http("divog_a", "http://localhost/input-a")
